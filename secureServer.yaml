@@ -1,0 +1,43 @@
+---
+- hosts: newserver
+  remote_user: auto
+
+  vars_prompt:
+    hostname: "What is the new hostname?"
+
+  sudo: yes
+
+  tasks:
+    - name: Install libselinux-python
+      yum: name=libselinux-python state=present
+    - name: set hostname
+      lineinfile: dest=/etc/sysconfig/network regexp=^HOSTNAME line="HOSTNAME={{ hostname }}"
+    - name: Set DNS resolv.conf
+      template: src=./templates/resolv.conf.j2 dest=/etc/resolv.conf mode=u=rw,g=r,o=r
+      notify:
+            - restart network
+    - name: Remove static ipaddress
+      lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-eth0 regexp=^IPADDR line=""
+      notify:
+            - restart network
+    - name: Use DHCP
+      lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-eth0 regexp=^BOOTPROTO line=BOOTPROTO=dhcp
+      notify:
+            - restart network
+    - name: Use DHCP hostname
+      lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-eth0 regexp=^DHCP_HOSTNAME line="DHCP_HOSTNAME={{ hostname }}"
+      notify:
+            - restart network
+    - name: Remove root login
+      lineinfile: dest=/etc/ssh/sshd_config regexp=^PermitRootLogin line="PermitRootLogin no"
+      notify:   
+         - restart sshd
+    - name: Remove password login
+      lineinfile: dest=/etc/ssh/sshd_config regexp=^PasswordAuthentication line="PasswordAuthentication no"
+      notify:
+            - restart sshd
+  handlers:
+       - name: restart sshd
+         service: name=sshd state=restarted
+       - name: restart network
+         service: name=network state=restarted
