@@ -3,7 +3,7 @@
 sed 's/ONBOOT=no/ONBOOT=yes/' /etc/sysconfig/network-scripts/ifcfg-eth0
 sed 's/BOOTPROTO=dhcp/BOOTPROTO=no/' /etc/sysconfig/network-scripts/ifcfg-eth0
 sed 's/ONBOOT=no/ONBOOT=yes/' /etc/sysconfig/network-scripts/ifcfg-eth1
-
+echo IPADDR=10.1.2.179 /etc/sysconfig/network-scripts/ifcfg-eth0
 
 
 iptables -F
@@ -21,7 +21,7 @@ service iptables save
 service iptables restart
 
 vi /etc/ssh/sshd_config
-sed 's/#PermitRootLogin no/PermitRootLogin yes/' /etc/ssh/sshd_config
+sed 's/#PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config
 
 service network restart
 service sshd restart

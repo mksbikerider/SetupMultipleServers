@@ -36,8 +36,12 @@
       lineinfile: dest=/etc/ssh/sshd_config regexp=^PasswordAuthentication line="PasswordAuthentication no"
       notify:
             - restart sshd
+
   handlers:
        - name: restart sshd
          service: name=sshd state=restarted
+         sudo: true
        - name: restart network
          service: name=network state=restarted
+         sudo: true
+
