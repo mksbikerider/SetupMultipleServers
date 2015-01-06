@@ -1,0 +1,19 @@
+
+  tasks:
+    - name: Install libselinux-python
+      yum: name=libselinux-python state=present
+    - name: Add wheel group
+      group: name=wheel state=present
+    - name: Add user for automation
+      user: name=ansible group=wheel
+    - name: Create .ssh directory for user
+      file: path=/home/ansible/.ssh state=directory
+    - name: Copy across public key
+      copy: src=/home/ansible/.ssh/id_rsa.pub dest=/home/ansible/.ssh/id_rsa.pub owner=ansible mode=0644
+    - name: Add the ansible public key to authorized keys
+      authorized_key: user=ansible key="{{ lookup('file', '/home/ansible/.ssh/id_rsa.pub') }}"
+    - name: Add %wheel to sudoers
+      lineinfile: dest=/etc/sudoers state=present regexp='^ansible' line='ansible ALL=(ALL) NOPASSWD:ALL' validate='visudo -cf %s'
+      notify:
+         - restart sshd
+

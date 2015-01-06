@@ -1,0 +1,17 @@
+---
+- hosts: newserver
+  remote_user: ansible
+
+  sudo: yes
+
+  tasks:
+    - name: Install libselinux-python
+      yum: name=libselinux-python state=present
+    - name: Remove root login
+      lineinfile: dest=/etc/ssh/sshd_config regexp=^PermitRootLogin line="PermitRootLogin no"
+      notify:   
+         - restart sshd
+    - name: Remove password login
+      lineinfile: dest=/etc/ssh/sshd_config regexp=^PasswordAuthentication line="PasswordAuthentication no"
+      notify:
+         - restart sshd
