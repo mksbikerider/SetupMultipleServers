@@ -1,0 +1,24 @@
+---
+- hosts: newserver
+  remote_user: auto
+
+  vars_prompt:
+    hostname: "What is the new hostname?"
+
+  sudo: yes
+
+  tasks:
+    - name: Install libselinux-python
+      yum: name=libselinux-python state=present
+    - name: Set DNS resolv.conf
+      template: src=./templates/resolv.conf.j2 dest=/etc/resolv.conf mode=u=rw,g=r,o=r
+      notify:
+            - restart network
+    - name: Remove static ipaddress
+      lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-eth0 regexp=^IPADDR line=""
+      notify:
+            - restart network
+    - name: Use DHCP
+      lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-eth0 regexp=^BOOTPROTO line=BOOTPROTO=dhcp
+      notify:
+            - restart network

@@ -1,0 +1,23 @@
+---
+- hosts: newserver
+  remote_user: ansible
+
+  vars_prompt:
+    hostname: "What is the new hostname?"
+
+  sudo: yes
+
+  tasks:
+    - name: Install libselinux-python
+      yum: name=libselinux-python state=present
+    - name: set hostname
+      lineinfile: dest=/etc/sysconfig/network regexp=^HOSTNAME line="HOSTNAME={{ hostname }}"
+    - name: Use DHCP hostname
+      lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-eth0 regexp=^DHCP_HOSTNAME line="DHCP_HOSTNAME={{ hostname }}"
+      notify:
+            - restart network
+  handlers:
+       - name: restart network
+         service: name=network state=restarted
+         sudo: true
+

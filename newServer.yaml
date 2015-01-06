@@ -1,4 +1,4 @@
-- hosts: newserver
+- hosts: localhost
   vars:
   remote_user: root
 

@@ -1,7 +1,5 @@
----
-#- hosts: newserver
-- hosts: Test1.vm
-  remote_user: auto
+
+  remote_user: ansible
 
   sudo: yes
 
@@ -46,8 +44,3 @@
       when: iptablesrules.stdout.find("Accept established") == -1
       notify: ['save iptables','restart iptables']
 
-  handlers:
-       - name: save iptables
-         command: service iptables save
-       - name: restart iptables
-         service: name=iptables state=restarted
