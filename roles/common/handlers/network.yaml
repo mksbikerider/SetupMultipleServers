@@ -1,4 +1,5 @@
 
-  handlers:
        - name: restart network
          service: name=network state=restarted
+         async: 45
+         poll: 0

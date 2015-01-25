@@ -1,5 +1,4 @@
 
-  handlers:
        - name: save iptables
          command: service iptables save
        - name: restart iptables

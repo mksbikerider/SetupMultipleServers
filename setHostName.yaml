@@ -12,6 +12,10 @@
       yum: name=libselinux-python state=present
     - name: set hostname
       lineinfile: dest=/etc/sysconfig/network regexp=^HOSTNAME line="HOSTNAME={{ hostname }}"
+    - name: Remove IPADDRESS
+      lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-eth0 regexp=^IPADDR= state=absent
+      notify:
+            - restart network
     - name: Use DHCP hostname
       lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-eth0 regexp=^DHCP_HOSTNAME line="DHCP_HOSTNAME={{ hostname }}"
       notify:
@@ -19,5 +23,8 @@
   handlers:
        - name: restart network
          service: name=network state=restarted
+         service: name=network state=restarted
+         async: 45
+         poll: 0
          sudo: true
 

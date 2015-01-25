@@ -1,0 +1,16 @@
+- hosts: newserver
+  vars:
+  remote_user: root
+
+  tasks:
+    - name: Add wheel group
+      group: name=wheel state=present
+    - name: Install libselinux-python
+      yum: name=libselinux-python state=present
+    - name: Add ansible to sudoers
+      lineinfile: dest=/etc/sudoers state=present regexp='^ansible' line='ansible ALL=(ALL) NOPASSWD:ALL' validate='visudo -cf %s'
+    - name: Add user for automation
+      user: name=ansible group=wheel generate_ssh_key=yes
+    - name: Add the ansible public key to authorized keys
+      authorized_key: user=ansible key="{{ lookup('file', '/home/ansible/.ssh/id_rsa.pub') }}"
+    - debug: msg="su to ansible and add your public key to /home/ansible/.ssh/authorized_keys, if you don't you'll lose access when you secure the server"

@@ -1,0 +1,23 @@
+---
+- hosts: newserver
+  remote_user: ansible
+
+  vars_prompt:
+    new_ip_address: "What is the ip address?"
+
+  sudo: yes
+
+  tasks:
+    - name: Install libselinux-python
+      yum: name=libselinux-python state=presents
+    - name: Setting IPADDRESS
+      lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-eth0 regexp=^IPADDR= line="IPADDR={{ new_ip_address }}"
+      notify:
+            - restart network
+  handlers:
+       - name: restart network
+         service: name=network state=restarted
+         async: 45
+         poll: 0
+         sudo: true
+

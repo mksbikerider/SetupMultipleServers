@@ -1,45 +1,39 @@
 
-  remote_user: ansible
-
-  sudo: yes
-
-  tasks:
     - name: SSH | get iptables rules
       shell: iptables -L
       register: iptablesrules
       always_run: yes
       changed_when: false
 
-    - name: SSH | add ssh table ssh input rule
+    - name: SSH | add table ssh input rule
       command: '/sbin/iptables -I INPUT 1 -p tcp --dport ssh -j ACCEPT -m comment --comment "SSH"'
       when: iptablesrules.stdout.find("SSH") == -1
       notify: ['save iptables','restart iptables']
-
-
-    - name: SSH | add ssh table drop input rule
+      
+    - name: SSH | add table drop input rule
       command: '/sbin/iptables -P INPUT DROP -m comment --comment "Drop input"'
       when: iptablesrules.stdout.find("Chain INPUT (policy DROP)") == -1  
       notify: ['save iptables','restart iptables']
 
 
-    - name: SSH | add ssh table drop forward rule
+    - name: SSH | add table drop forward rule
       command: '/sbin/iptables -P FORWARD DROP -m comment --comment "Drop forward"'
       when: iptablesrules.stdout.find("Chain FORWARD (policy DROP)") == -1
       notify: ['save iptables','restart iptables']
 
 
-    - name: SSH | add ssh table accept output rule
+    - name: SSH | add table accept output rule
       command: '/sbin/iptables -P OUTPUT ACCEPT -m comment --comment "Accept output"'
       when: iptablesrules.stdout.find("Chain OUTPUT (policy ACCEPT)") == -1
       notify: ['save iptables','restart iptables']
 
-    - name: SSH | add ssh table accept local rule
+    - name: SSH | add table accept local rule
       command: /sbin/iptables -A INPUT -i lo -j ACCEPT -m comment --comment "Accept local"
       when: iptablesrules.stdout.find("Accept local") == -1
       notify: ['save iptables','restart iptables']
 
 
-    - name: SSH | add ssh table accept establised rule
+    - name: SSH | add table accept establised rule
       command: /sbin/iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT -m comment --comment "Accept established"
       when: iptablesrules.stdout.find("Accept established") == -1
       notify: ['save iptables','restart iptables']

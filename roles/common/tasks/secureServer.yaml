@@ -1,10 +1,4 @@
----
-- hosts: newserver
-  remote_user: ansible
 
-  sudo: yes
-
-  tasks:
     - name: Install libselinux-python
       yum: name=libselinux-python state=present
     - name: Remove root login

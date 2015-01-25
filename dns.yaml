@@ -1,0 +1,32 @@
+---
+- name: ensure dnsmasq is installed
+  yum: name=dnsmasq state=present
+
+- name: Never forward addresses in the non-routed address spaces
+  lineinfile: dest=/etc/dnsmasq.conf state=present regexp='^#bogus-priv' line='bogus-priv'
+
+- name: Google DNS 1
+  lineinfile: dest=/etc/dnsmasq.conf state=present regexp='^server=8.8.4.4' line='server=8.8.4.4'
+
+- name: Google DNS 2
+  lineinfile: dest=/etc/dnsmasq.conf state=present regexp='^server=8.8.8.8' line='server=8.8.8.8'
+
+- name: Set local domain name
+  lineinfile: dest=/etc/dnsmasq.conf state=present regexp='^#local=' line='local=/vm/'
+  
+- name: Only serve eth0
+  lineinfile: dest=/etc/dnsmasq.conf state=present regexp='#interface=' line='interface=eth0'
+
+- name: Expand hosts to include domain name
+  lineinfile: dest=/etc/dnsmasq.conf state=present regexp='^#expand-hosts=' line='expand-hosts'
+
+- name: Set domain
+  lineinfile: dest=/etc/dnsmasq.conf state=present regexp='^#domain=' line='domain=vm'
+
+- name: Set DHCP range
+  lineinfile: dest=/etc/dnsmasq.conf state=present regexp='^#dhcp-range=' line='dhcp-range=10.1.2.103,10.1.2.254,12h'
+
+- name: ensure dnsmasq starts on a fresh boot
+  service: name=dnsmasq state=started enabled=yes
+  
+  
