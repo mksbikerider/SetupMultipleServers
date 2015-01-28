@@ -39,30 +39,10 @@ Again on the command line of the host PC
 
 Login to the new VM using the VirtualBox terminal
 
-    vi  /etc/udev/rules.d/70-persistent-net.rules
-Add net rules -? What are they again? Copy from current VM.
-    vi /etc/udev/rules.d/75-persistent-net-generator.rules
-
-
-    cd /etc/sysconfig/network-scripts/
-    vi ifcfg-eth0
-Remove mac-address -? Replace with sed / awk rather than VI
-Remove UUID
-    set onboot=yes
-    set bootproto=no
-    set ipaddr=10.1.2.3
-
-    vi ifcfg-eth0
-Remove mac-address
-Remove UUID
-    set onboot=yes
-
-    vi /etc/ssh/sshd_config
-    uncomment PermitRootLogin=yes
-
-    service iptables stop
-
-    shutdown -h 0
+    ifup eth1
+    curl -o setup.sh http://github.com/mksbikerider/buildVm/setupBaseVm/setup.sh
+    chmod 700 setup.sh
+    ./setup.sh
     
 Back at the host PC Terminal
 
@@ -71,10 +51,14 @@ Back at the host PC Terminal
     VBoxManage clonevm MinimalCentOS --snapshot BasicNetworking --mode machine --options link --name ansible --register
 
     VBoxManage startvm ansible --type headless
+    
+    ssh-keygen -t rsa -C "your_email@example.com"
+
+    scp id_rsa.pub root@10.1.2.3:host_rsa.pub
 
     ssh root@10.1.2.3
 
-install ansible using yum (see ansible website)
+install Ansible using yum (see ansible website)
 
     yum install epel-release
 
@@ -94,7 +78,7 @@ Get this Git Repo
 
 You'd better now add your public key to the authorized keys file or you'll lose access to the server
 
-    cat my_key.pub >> /home/ansible/.ssh/authorized_keys
+    cat host_rsa.pub >> /home/ansible/.ssh/authorized_keys
 
     su ansible
 
