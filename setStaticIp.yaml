@@ -9,7 +9,7 @@
 
   tasks:
     - name: Install libselinux-python
-      yum: name=libselinux-python state=presents
+      yum: name=libselinux-python state=present
     - name: Setting IPADDRESS
       lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-eth0 regexp=^IPADDR= line="IPADDR={{ new_ip_address }}"
       notify:

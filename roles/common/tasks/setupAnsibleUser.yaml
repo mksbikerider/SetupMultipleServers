@@ -13,6 +13,7 @@
       authorized_key: user=ansible key="{{ lookup('file', '/home/ansible/.ssh/id_rsa.pub') }}"
     - name: Add %ansible to sudoers
       lineinfile: dest=/etc/sudoers state=present regexp='^ansible' line='ansible ALL=(ALL) NOPASSWD:ALL' validate='visudo -cf %s'
+      sudo: yes
       notify:
          - restart sshd
 

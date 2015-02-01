@@ -1,6 +1,6 @@
-# file: all.yml
+# file: all.yaml
 - hosts: all
   roles:
     - common
     
-- include: dns.yml
+- include: dns.yaml

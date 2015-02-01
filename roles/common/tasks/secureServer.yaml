@@ -1,11 +1,14 @@
 
     - name: Install libselinux-python
       yum: name=libselinux-python state=present
+      sudo: yes
     - name: Remove root login
       lineinfile: dest=/etc/ssh/sshd_config regexp=^PermitRootLogin line="PermitRootLogin no"
+      sudo: yes
       notify:   
          - restart sshd
     - name: Remove password login
       lineinfile: dest=/etc/ssh/sshd_config regexp=^PasswordAuthentication line="PasswordAuthentication no"
+      sudo: yes
       notify:
          - restart sshd
