@@ -1,4 +1,4 @@
-# This is a guide to setup a local multiple server development environment using VirtualBox CentOS 6.5 and Ansible.
+# This is a guide to setting up a local multiple server development environment using VirtualBox CentOS 6.5 and Ansible.
 
 I wrote this as I needed a development environment to test software that required multiple servers.
 Initially I set up a base VM and then altered it for each server I needed but quickly found I needed to update each server individually 
