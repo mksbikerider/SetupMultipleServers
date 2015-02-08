@@ -122,8 +122,8 @@ You'd better now add your public key to the authorized keys file or you'll lose 
     ansible-playbook -i newserver setStaticIp.yaml
 
 Move this server to 10.1.2.4, when you do this you will lose your ssh connection as you've just changed the ip address.
-ssh into ansible@10.1.2.4
 
+    ssh ansible@10.1.2.4
     ansible-playbook -i devServers all.yaml
 
 
@@ -135,13 +135,13 @@ At your host PC terminal
 
     VBoxManage clonevm MinimalCentOS --snapshot BasicNetworking --mode machine --options link --name managed1 --register
 
-    VBoxManage startvm slave1 --type headless
+    VBoxManage startvm managed1 --type headless
     
 At your ssh session to the Control server
 
-    ansible-playbook -i newserver newServer.yaml --ask-pass
+    ansible-playbook -i newserver firstServer.yaml --ask-pass
     ansible-playbook -i newserver setHostName.yaml
-    ansible-playbook -i all all.yaml
+    ansible-playbook -i devServers all.yaml
 
 You should now have a new server configured by Ansible to be secure (limited SSH, IP tables) and use DHCP. You can repeat
 the instructions from 'Create a managed server' as many times as you need.

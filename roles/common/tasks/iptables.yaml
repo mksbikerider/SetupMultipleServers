@@ -11,6 +11,18 @@
       when: iptablesrules.stdout.find("SSH") == -1
       notify: ['save iptables','restart iptables']
       sudo: yes
+
+    - name: DHCP | add table dhcp output rule
+      command: '/sbin/iptables -A OUTPUT -p UDP --dport 67:68 -j ACCEPT -m comment --comment "DHCP"'
+      when: iptablesrules.stdout.find("DHCP") == -1
+      notify: ['save iptables','restart iptables']
+      sudo: yes
+
+    - name: DNS | add table dns output rule
+      command: '/sbin/iptables -A OUTPUT -p udp --dport 53 -j ACCEPT -m comment --comment "DNS"'
+      when: iptablesrules.stdout.find("DNS") == -1
+      notify: ['save iptables','restart iptables']
+      sudo: yes
       
     - name: SSH | add table drop input rule
       command: '/sbin/iptables -P INPUT DROP -m comment --comment "Drop input"'

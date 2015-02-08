@@ -1,5 +1,7 @@
 
        - name: save iptables
          command: service iptables save
+         sudo: yes
        - name: restart iptables
          service: name=iptables state=restarted
+         sudo: yes

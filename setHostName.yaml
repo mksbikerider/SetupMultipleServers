@@ -20,11 +20,14 @@
       lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-eth0 regexp=^DHCP_HOSTNAME line="DHCP_HOSTNAME={{ hostname }}"
       notify:
             - restart network
+    - name: Use DHCP
+      lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-eth0 regexp=^BOOTPROTO line=BOOTPROTO=dhcp
+      notify:
+            - restart network
   handlers:
        - name: restart network
          service: name=network state=restarted
-         service: name=network state=restarted
-         async: 45
+         async: 10
          poll: 0
          sudo: true
 
