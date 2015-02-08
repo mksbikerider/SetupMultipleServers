@@ -41,5 +41,3 @@
     - name: ensure dnsmasq starts on a fresh boot
       service: name=dnsmasq state=started enabled=yes
       sudo: yes
-  
-  
