@@ -37,6 +37,12 @@
     - name: Set DHCP range
       lineinfile: dest=/etc/dnsmasq.conf state=present regexp='^#dhcp-range=' line='dhcp-range=10.1.2.103,10.1.2.254,12h'
       sudo: yes
+      
+    - name: DNS | add table dns input rule
+      command: '/sbin/iptables -I INPUT -p udp --dport 53 -j ACCEPT -m comment --comment "DNS_INPUT"'
+      when: iptablesrules.stdout.find("DNS_INPUT") == -1
+      notify: ['save iptables','restart iptables']
+      sudo: yes
 
     - name: ensure dnsmasq starts on a fresh boot
       service: name=dnsmasq state=started enabled=yes

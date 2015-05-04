@@ -3,4 +3,7 @@
   roles:
     - common
     
-- include: dns.yaml
+- hosts: dns
+  roles:
+    - dhcp
+    - dnsMasq
