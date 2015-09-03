@@ -1,0 +1,35 @@
+  - stat: path={{java_name}}
+    register: java_dir
+  - debug: msg="Java dir exists and is a directory"
+    when: java_dir.stat.isdir is defined and java_dir.stat.isdir
+
+  - name: Install wget package
+    yum: name=wget state=present
+    sudo: yes
+
+  - name: Create /opt directory
+    file: path=/opt state=directory
+
+  - name: Download Java
+    command: "wget -q -O {{java_archive}} --no-check-certificate --no-cookies --header 'Cookie: oraclelicense=accept-securebackup-cookie' {{download_url}} creates={{java_archive}}"
+    when: java_dir.stat.isdir is not defined
+    sudo: yes
+
+  - name: Unpack archive
+    command: "tar -zxf {{java_archive}} -C {{download_folder}} creates={{java_name}}"
+    when: java_dir.stat.isdir is not defined
+    sudo: yes
+
+  - name: Fix ownership
+    file: state=directory path={{java_name}} owner=root group=root recurse=yes
+    when: java_dir.stat.isdir is not defined
+    sudo: yes
+
+  - name: Make Java available for system
+    command: "alternatives --install /usr/bin/java java {{java_name}}/bin/java 2000"
+    when: java_dir.stat.isdir is not defined
+    sudo: yes
+
+  - name: Clean up
+    file: state=absent path={{java_archive}}
+    sudo: yes

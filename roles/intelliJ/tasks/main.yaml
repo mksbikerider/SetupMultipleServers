@@ -1,0 +1,29 @@
+  - stat: path={{idea_name}}
+    register: idea_dir
+  - debug: msg="Idea dir exists and is a directory"
+    when: idea_dir.stat.isdir is defined and idea_dir.stat.isdir
+
+  - name: Download idea
+    command: "wget -q -O {{idea_archive}} {{download_url}} creates={{idea_archive}}"
+    when: idea_dir.stat.isdir is not defined
+    sudo: yes
+
+  - name: Unpack archive
+    command: "tar -zxf {{idea_archive}} -C {{download_folder}} creates={{idea_name}}"
+    when: idea_dir.stat.isdir is not defined
+    sudo: yes
+
+  - name: Fix ownership
+    file: state=directory path={{idea_name}} owner=root group=root recurse=yes
+    when: idea_dir.stat.isdir is not defined
+    sudo: yes
+
+  - name: Make idea available for system
+    command: 'alternatives --install "/usr/bin/idea" "idea" "{{idea_name}}/bin/idea.sh" 2000'
+    when: idea_dir.stat.isdir is not defined
+    sudo: yes
+
+  - name: Clean up
+    file: state=absent path={{idea_archive}}
+    when: idea_dir.stat.isdir is not defined
+    sudo: yes

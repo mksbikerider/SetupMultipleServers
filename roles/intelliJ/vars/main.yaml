@@ -1,0 +1,5 @@
+
+    download_url: https://download.jetbrains.com/idea/ideaIC-14.1.4.tar.gz
+    download_folder: /opt
+    idea_name: "{{download_folder}}/ideaIC-14"
+    idea_archive: "{{download_folder}}/ideaIC-14.1.4.tar.gz"

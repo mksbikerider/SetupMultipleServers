@@ -1,3 +1,4 @@
     - name: Install git
       yum: name=git state=present
       sudo: yes
+      # Need to upgrade GIT to modern version at this point. Come back to this.

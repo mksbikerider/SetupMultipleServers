@@ -1,0 +1,20 @@
+    - name: Install vncServer package
+      yum: name=tigervnc-server state=present
+      sudo: yes
+# Need to fix this so only correct parts of Desktop are downloaded not including Network Manager
+    - name: Install Desktop package
+      yum: name="@Desktop" state=present
+      sudo: yes
+    - name: remove network manager package
+      yum: name="NetworkManager" state=absent
+
+      sudo: yes
+# Manually start VNC when needed
+    - service: name=vncserver enabled=no
+      sudo: yes
+
+    - name: DNS | add firewall VNC input rule
+      command: '/sbin/iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport 5901 -j ACCEPT -m comment --comment "VNC_Port"'
+      when: iptablesrules.stdout.find("VNC_PORT") == -1
+      notify: ['save iptables','restart iptables']
+      sudo: yes
