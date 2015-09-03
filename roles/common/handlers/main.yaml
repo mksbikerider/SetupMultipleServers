@@ -1,3 +1,4 @@
 - include: iptables.yaml
 - include: sshd.yaml
 - include: network.yaml
+- include: ntpd.yaml

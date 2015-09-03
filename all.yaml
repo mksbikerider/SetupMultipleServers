@@ -5,5 +5,11 @@
     
 - hosts: dns
   roles:
-    - dhcp
     - dnsMasq
+
+- hosts: DevCent
+  roles:
+    - vncServer
+    - git
+    - suthermiUser
+

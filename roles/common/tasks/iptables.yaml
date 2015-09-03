@@ -23,20 +23,6 @@
       when: iptablesrules.stdout.find("DNS") == -1
       notify: ['save iptables','restart iptables']
       sudo: yes
-      
-    - name: SSH | add table drop input rule
-      command: '/sbin/iptables -P INPUT DROP -m comment --comment "Drop input"'
-      when: iptablesrules.stdout.find("Chain INPUT (policy DROP)") == -1  
-      notify: ['save iptables','restart iptables']
-      sudo: yes
-
-
-    - name: SSH | add table drop forward rule
-      command: '/sbin/iptables -P FORWARD DROP -m comment --comment "Drop forward"'
-      when: iptablesrules.stdout.find("Chain FORWARD (policy DROP)") == -1
-      notify: ['save iptables','restart iptables']
-      sudo: yes
-
 
     - name: SSH | add table accept output rule
       command: '/sbin/iptables -P OUTPUT ACCEPT -m comment --comment "Accept output"'
@@ -50,10 +36,20 @@
       notify: ['save iptables','restart iptables']
       sudo: yes
 
-
     - name: SSH | add table accept establised rule
       command: /sbin/iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT -m comment --comment "Accept established"
       when: iptablesrules.stdout.find("Accept established") == -1
       notify: ['save iptables','restart iptables']
       sudo: yes
 
+    - name: SSH | add table drop input rule
+      command: '/sbin/iptables -P INPUT DROP -m comment --comment "Drop input"'
+      when: iptablesrules.stdout.find("Chain INPUT (policy DROP)") == -1
+      notify: ['save iptables','restart iptables']
+      sudo: yes
+
+    - name: SSH | add table drop forward rule
+      command: '/sbin/iptables -P FORWARD DROP -m comment --comment "Drop forward"'
+      when: iptablesrules.stdout.find("Chain FORWARD (policy DROP)") == -1
+      notify: ['save iptables','restart iptables']
+      sudo: yes

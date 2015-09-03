@@ -1,28 +1,23 @@
----
-  remote_user: auto
 
-  sudo: yes
-
-  tasks:
-    - name: Install libselinux-python
-      yum: name=libselinux-python state=present
-    - name: Set DNS resolv.conf
-      template: src=./templates/resolv.conf.j2 dest=/etc/resolv.conf mode=u=rw,g=r,o=r
-      notify:
-            - restart network
-    - name: Remove static ipaddress
-      lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-eth0 regexp=^IPADDR line=""
-      notify:
-            - restart network
-    - name: Use DHCP
-      lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-eth0 regexp=^BOOTPROTO line=BOOTPROTO=dhcp
-      notify:
-            - restart network
-    - name: Do use PEERDNS on eth0
-      lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-eth1 regexp=^PEERDNS line=PEERDNS=yes
-      notify:
-            - restart network
-    - name: Do not use PEERDNS on eth1
-      lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-eth1 regexp=^PEERDNS line=PEERDNS=no
-      notify:
-            - restart network
+  - name: Install libselinux-python
+    yum: name=libselinux-python state=present
+  - name: Set DNS resolv.conf
+    template: src=./templates/resolv.conf.j2 dest=/etc/resolv.conf mode=u=rw,g=r,o=r
+    notify:
+          - restart network
+  - name: Remove static ipaddress
+    lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-eth0 regexp=^IPADDR line=""
+    notify:
+          - restart network
+  - name: Use DHCP
+    lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-eth0 regexp=^BOOTPROTO line=BOOTPROTO=dhcp
+    notify:
+          - restart network
+  - name: Do use PEERDNS on eth0
+    lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-eth1 regexp=^PEERDNS line=PEERDNS=yes
+    notify:
+          - restart network
+  - name: Do not use PEERDNS on eth1
+    lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-eth1 regexp=^PEERDNS line=PEERDNS=no
+    notify:
+          - restart network
