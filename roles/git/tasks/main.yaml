@@ -2,3 +2,77 @@
       yum: name=git state=present
       sudo: yes
       # Need to upgrade GIT to modern version at this point. Come back to this.
+      # If building GIT install curl-dev first
+
+    - name: Install curl-devel
+      yum: name=curl-devel state=present
+      sudo: yes
+
+
+    - name: Install expat-devel
+      yum: name=expat-devel state=present
+      sudo: yes
+
+
+    - name: Install gettext-devel
+      yum: name=gettext-devel state=present
+      sudo: yes
+
+
+    - name: Install openssl-devel
+      yum: name=openssl-devel state=present
+      sudo: yes
+
+
+    - name: Install zlib-devel
+      yum: name=zlib-devel state=present
+      sudo: yes
+
+
+    - name: Install asciidoc
+      yum: name=asciidoc state=present
+      sudo: yes
+
+
+    - name: Install xmlto
+      yum: name=xmlto state=present
+      sudo: yes
+
+    - name: Install docbook2X
+      yum: name=docbook2X state=present enablerepo=*epel*
+      sudo: yes
+
+    - name: Link docbook to location git make expects
+      shell: ls -s /usr/bin/db2x_docbook2texi /usr/bin/docbook2x-texi
+      sudo: yes
+
+    - name: Install GCC
+      yum: name=gcc state=present
+      sudo: yes
+
+    - name: Install Perl Devel
+      yum: name=perl-devel state=present
+      sudo: yes
+
+    - name: Install Perl CPAN
+      yum: name=perl-CPAN state=present
+      sudo: yes
+
+    - name: Update Git Repo
+      git: repo=git://git.kernel.org/pub/scm/git/git.git dest=~/var/code/git accept_hostkey=true
+
+    - name: Build GIT
+      shell: 'cd ~/var/code/git ;{{ item }}'
+      with_items:
+        - make configure
+        - ./configure --prefix=/usr
+        - make all doc info
+
+    - name: Install GIT
+      # Problem here, this only works if the user running this script is ansible.
+      # Should rewrite the download and build to use a shared space.
+      shell: 'cd /home/ansible/var/code/git ; make install install-doc install-html install-info'
+      sudo: yes
+
+
+
